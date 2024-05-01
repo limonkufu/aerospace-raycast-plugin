@@ -4,6 +4,26 @@ import path from "path";
 import os from "os";
 import TOML from "@iarna/toml";
 
+export interface Binding {
+  [key: string]: never; // Define more specifically if possible, replacing any with a more precise type
+}
+
+export interface ModeConfig {
+  binding?: Binding;
+}
+
+export interface AppConfig {
+  mode?: {
+    [key: string]: ModeConfig;
+  };
+}
+
+export interface Shortcut {
+  mode: string;
+  shortcut: string;
+  description: string;
+}
+
 function readConfigFile(configPath: string): { content?: string; error?: string } {
   if (configPath.startsWith("~")) {
     configPath = path.join(os.homedir(), configPath.slice(1));

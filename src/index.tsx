@@ -1,71 +1,51 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Action, ActionPanel, Keyboard, List } from "@raycast/api";
-import { getConfig } from "./utils/config";
+import { Action, ActionPanel, Keyboard, List, showHUD } from "@raycast/api";
+import { getConfig, AppConfig, Shortcut } from "./utils/config";
+import { normalizeKey, mapKeyToKeyCode } from "./utils/keys";
+import { runAppleScript } from "@raycast/utils";
 
-interface Binding {
-  [key: string]: any; // Define more specifically if possible, replacing any with a more precise type
-}
+async function executeShortcut(shortcut: string) {
+  const parts = shortcut.split("-");
+  const key = parts.pop(); // Assuming the last part is always the key
+  if (!key) {
+    console.error("No key found in shortcut");
+    return;
+  }
+  const modifiers = parts
+    .map((mod) => {
+      switch (mod.toLowerCase()) {
+        case "cmd":
+          return "command down";
+        case "ctrl":
+          return "control down";
+        case "alt":
+          return "option down";
+        case "shift":
+          return "shift down";
+        default:
+          return "";
+      }
+    })
+    .filter(Boolean)
+    .join(", ");
 
-interface ModeConfig {
-  binding?: Binding;
-}
+  const keyCode = mapKeyToKeyCode(key);
 
-interface AppConfig {
-  mode?: {
-    [key: string]: ModeConfig;
-  };
-}
+  console.log(`Executing shortcut: ${keyCode ? `key code ${keyCode}` : `keystroke "${key}"`} using {${modifiers}}`);
+  const script = `
+tell application "System Events"
+    ${keyCode ? `key code ${keyCode}` : `keystroke "${key}"`} using {${modifiers}}
+    return "Executed: ${shortcut}(${modifiers} - ${key})}"
+end
+`;
 
-interface Shortcut {
-  mode: string;
-  shortcut: string;
-  description: string;
-}
-
-function normalizeKey(key: string): string {
-  const keyMap: { [key: string]: string } = {
-    minus: "-",
-    equal: "=",
-    period: ".",
-    comma: ",",
-    slash: "/",
-    backslash: "\\",
-    quote: "'",
-    semicolon: ";",
-    backtick: "`",
-    leftSquareBracket: "[",
-    rightSquareBracket: "]",
-    space: "space",
-    enter: "enter",
-    esc: "escape",
-    backspace: "backspace",
-    tab: "tab",
-    keypad0: "0",
-    keypad1: "1",
-    keypad2: "2",
-    keypad3: "3",
-    keypad4: "4",
-    keypad5: "5",
-    keypad6: "6",
-    keypad7: "7",
-    keypad8: "8",
-    keypad9: "9",
-    keypadClear: "clear",
-    keypadDecimalMark: "decimal",
-    keypadDivide: "divide",
-    keypadEnter: "enter",
-    keypadEqual: "=",
-    keypadMinus: "-",
-    keypadMultiply: "*",
-    keypadPlus: "+",
-    left: "arrowLeft",
-    down: "arrowDown",
-    up: "arrowUp",
-    right: "arrowRight",
-    alt: "opt",
-  };
-
-  return keyMap[key] || key; // Default to key if not in map
+  try {
+    const res = await runAppleScript(script, []);
+    await showHUD(res);
+  } catch (error) {
+    console.error(`Failed to execute shortcut: ${error}`);
+    await showHUD(`Failed to execute: ${shortcut}`);
+  }
 }
 
 function extractKeyboardShortcuts(config: AppConfig): Record<string, Shortcut> {
@@ -112,7 +92,7 @@ export default function Command() {
         const keyPart = normalizeKey(shortcutParts[shortcutParts.length - 1]); // last part as key
         // console.log("Key:", keyPart);
         // If the key is esc set it to nothing to avoid conflict with raycast api
-        
+
         return (
           <List.Item
             key={key}
@@ -121,14 +101,17 @@ export default function Command() {
             accessories={[{ text: value.mode }]}
             actions={
               <ActionPanel>
-          <Action
-            title="Activate"
-            onAction={() => console.log("Activated", value.description)}
-            shortcut={{
-              modifiers: normalizedModifiers.map((modifier) => modifier as Keyboard.KeyModifier),
-              key: keyPart === "escape" ? "home" : keyPart as Keyboard.KeyEquivalent,
-            }}
-          />
+                <Action
+                  title="Activate"
+                  onAction={() => {
+                    console.log("Activated", value.description);
+                    executeShortcut(value.shortcut);
+                  }}
+                  shortcut={{
+                    modifiers: normalizedModifiers.map((modifier) => modifier as Keyboard.KeyModifier),
+                    key: keyPart === "escape" ? "home" : (keyPart as Keyboard.KeyEquivalent),
+                  }}
+                />
               </ActionPanel>
             }
           />
