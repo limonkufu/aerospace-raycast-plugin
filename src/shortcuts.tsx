@@ -96,6 +96,7 @@ export default function Command() {
         return (
           <List.Item
             key={key}
+            icon={"list-icon.png"}
             title={value.description}
             subtitle={value.shortcut}
             accessories={[{ text: value.mode }]}

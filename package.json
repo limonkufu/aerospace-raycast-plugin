@@ -24,9 +24,9 @@
   ],
   "commands": [
     {
-      "name": "index",
-      "title": "Aerospace Test",
-      "description": "Test test test test",
+      "name": "shortcuts",
+      "title": "Aerospace Shortcuts",
+      "description": "All of the shortcuts of the aerospace parsed from your config file",
       "mode": "view"
     },
     {
