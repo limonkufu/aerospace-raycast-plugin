@@ -24,7 +24,7 @@
   ],
   "commands": [
     {
-      "name": "shortcuts",
+      "name": "showShortcuts",
       "title": "Aerospace Shortcuts",
       "description": "All of the shortcuts of the aerospace parsed from your config file",
       "mode": "view"
@@ -34,6 +34,13 @@
       "title": "Aerospace Config",
       "description": "Show config of the aerospace",
       "mode": "view"
+    },
+    {
+      "name": "shortcutsMenubar",
+      "title": "Aerospace Menubar Shortcuts",
+      "subtitle": "Aerospace",
+      "description": "See your Aerospace shortcuts at a glance",
+      "mode": "menu-bar"
     }
   ],
   "dependencies": {
