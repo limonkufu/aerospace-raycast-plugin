@@ -48,6 +48,22 @@ end
   }
 }
 
+export function groupShortcutsByMode(shortcuts: Record<string, Shortcut>): Record<string, Shortcut[]> {
+  const grouped: Record<string, Shortcut[]> = {};
+
+  // Iterate over each shortcut
+  Object.values(shortcuts).forEach((shortcut) => {
+    // If the mode does not yet exist in the grouped object, initialize it
+    if (!grouped[shortcut.mode]) {
+      grouped[shortcut.mode] = [];
+    }
+    // Add the shortcut to the corresponding mode array
+    grouped[shortcut.mode].push(shortcut);
+  });
+
+  return grouped;
+}
+
 export function extractKeyboardShortcuts(config: AppConfig): Record<string, Shortcut> {
   const shortcuts: Record<string, Shortcut> = {};
   console.log(config);
@@ -56,19 +72,19 @@ export function extractKeyboardShortcuts(config: AppConfig): Record<string, Shor
     // Iterate over each mode
     console.log("Modes:", Object.keys(config.mode));
     for (const mode of Object.keys(config.mode)) {
-        console.log("Mode:", mode);
-        const bindings = config.mode[mode]?.binding; // Add a type guard to check if config.mode[mode] is defined
-        if (bindings) {
-            // Add each key binding found to the shortcuts object
-            for (const key of Object.keys(bindings)) {
-                console.log("Key:", key, "\t\tValue:", bindings[key]);
-                shortcuts[mode + key] = {
-                    mode: mode,
-                    shortcut: key,
-                    description: JSON.stringify(bindings[key]).replace(/"/g, "")
-                };
-            }
+      console.log("Mode:", mode);
+      const bindings = config.mode[mode]?.binding; // Add a type guard to check if config.mode[mode] is defined
+      if (bindings) {
+        // Add each key binding found to the shortcuts object
+        for (const key of Object.keys(bindings)) {
+          console.log("Key:", key, "\t\tValue:", bindings[key]);
+          shortcuts[mode + key] = {
+            mode: mode,
+            shortcut: key,
+            description: JSON.stringify(bindings[key]).replace(/"/g, ""),
+          };
         }
+      }
     }
   }
 
