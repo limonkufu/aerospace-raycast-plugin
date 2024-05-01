@@ -1,9 +1,9 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "aerospace",
-  "title": "aerospace",
-  "description": "Aerospace Window Management",
-  "icon": "command-icon.png",
+  "title": "Aerospace Tiling Window Manager",
+  "description": "Aerospace Tiling Window Manager Extension for Raycast to see and configure your shortcuts",
+  "icon": "aerospace-icon.png",
   "author": "limonkufu",
   "categories": [
     "Productivity",
@@ -25,20 +25,19 @@
   "commands": [
     {
       "name": "showShortcuts",
-      "title": "Aerospace Shortcuts",
+      "title": "Show Aerospace Shortcuts",
       "description": "All of the shortcuts of the aerospace parsed from your config file",
       "mode": "view"
     },
     {
       "name": "showConfig",
-      "title": "Aerospace Config",
+      "title": "Show Aerospace Config",
       "description": "Show config of the aerospace",
       "mode": "view"
     },
     {
       "name": "shortcutsMenubar",
-      "title": "Aerospace Menubar Shortcuts",
-      "subtitle": "Aerospace",
+      "title": "Enable Aerospace Menubar Shortcuts",
       "description": "See your Aerospace shortcuts at a glance",
       "mode": "menu-bar"
     }
