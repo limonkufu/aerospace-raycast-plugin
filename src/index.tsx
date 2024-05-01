@@ -1,12 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { List } from "@raycast/api";
 import { getConfig } from "./utils/config";
-import { text } from "stream/consumers";
 
+interface Binding {
+  [key: string]: any; // Define more specifically if possible, replacing any with a more precise type
+}
 
-function extractKeyboardShortcuts(config: any): Record<string, object> {
-  const shortcuts: Record<string, object> = {};
-  console.log(config)
+interface ModeConfig {
+  binding?: Binding;
+}
+
+interface AppConfig {
+  mode?: {
+    [key: string]: ModeConfig;
+  };
+}
+
+interface Shortcut {
+  mode: string;
+  shortcut: string;
+  description: string;
+}
+
+function extractKeyboardShortcuts(config: AppConfig): Record<string, Shortcut> {
+  const shortcuts: Record<string, Shortcut> = {};
+  console.log(config);
   // Check if 'mode' exists in the configuration
   if (config.mode) {
     // Iterate over each mode
@@ -32,7 +50,7 @@ function extractKeyboardShortcuts(config: any): Record<string, object> {
 }
 
 export default function Command() {
-  const { config } = getConfig();
+  const { config } = getConfig() as { config: AppConfig };
   const keyboardShortcuts = extractKeyboardShortcuts(config);
 
   console.debug("Keyboard shortcuts:", keyboardShortcuts);
