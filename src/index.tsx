@@ -39,7 +39,7 @@ function extractKeyboardShortcuts(config: AppConfig): Record<string, Shortcut> {
           shortcuts[mode + key] = {
             mode: mode,
             shortcut: key,
-            description: JSON.stringify(bindings[key])
+            description: JSON.stringify(bindings[key]),
           };
         }
       }
